@@ -14,7 +14,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <a href="{{ route('proyectos.create') }}" class="btn btn-primary btn-sm" style="font-size: 16px">
+                        <a href="{{ route('proyectos.create') }}" class="btn btn-primary btn-sm" style="font-size: 14px">
                             Nuevo Proyecto
                         </a>
                     </div>

@@ -1,16 +1,32 @@
+-- CREATE, ALTER, DROP, RENAME
+
+-- Crear la base de datos
+DROP DATABASE IF EXISTS proyectogdb_mapache;
+CREATE DATABASE proyectogdb_mapache;
+
+-- Apuntar a la Base de Datos
 USE proyectogdb_mapache;
 
+-- Crear usuarios
+CREATE USER 'Consultor'@'%' IDENTIFIED BY 'C0nsu1t0r!_2024';
+CREATE USER 'Funcionario'@'%' IDENTIFIED BY 'Funct10n@r10!_2O2A';
+CREATE USER 'DBA'@'%' IDENTIFIED BY 'D8A$up3rP@ss_2O2A!';
+
+-- Creación de tablas
+DROP TABLE IF EXISTS Roles;
 CREATE TABLE Roles (
     ID_Rol INT AUTO_INCREMENT PRIMARY KEY,
     Descripcion VARCHAR(100) NOT NULL
 );
 
+DROP TABLE IF EXISTS Habilidades;
 CREATE TABLE Habilidades (
     ID_Habilidad INT AUTO_INCREMENT PRIMARY KEY,
     Descripcion VARCHAR(255) NOT NULL,
     Nivel_Dificultad INT NOT NULL
 );
 
+DROP TABLE IF EXISTS Empleados;
 CREATE TABLE Empleados (
     ID_Empleado INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(255) NOT NULL,
@@ -19,6 +35,7 @@ CREATE TABLE Empleados (
     FOREIGN KEY (Rol_ID) REFERENCES Roles(ID_Rol)
 );
 
+DROP TABLE IF EXISTS Clientes;
 CREATE TABLE Clientes (
     ID_Cliente INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(255) NOT NULL,
@@ -27,6 +44,7 @@ CREATE TABLE Clientes (
     Correo_Electronico VARCHAR(255) NOT NULL
 );
 
+DROP TABLE IF EXISTS Proyectos;
 CREATE TABLE Proyectos (
     ID_Proyecto INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(255) NOT NULL,
@@ -38,6 +56,7 @@ CREATE TABLE Proyectos (
     FOREIGN KEY (ID_Cliente) REFERENCES Clientes(ID_Cliente)
 );
 
+DROP TABLE IF EXISTS Tareas;
 CREATE TABLE Tareas (
     ID_Tarea INT AUTO_INCREMENT PRIMARY KEY,
     Descripcion TEXT NOT NULL,
@@ -50,7 +69,7 @@ CREATE TABLE Tareas (
     FOREIGN KEY (ID_Proyecto) REFERENCES Proyectos(ID_Proyecto)
 );
 
-
+DROP TABLE IF EXISTS Empleado_Habilidad;
 CREATE TABLE Empleado_Habilidad (
     ID_Empleado INT NOT NULL,
     ID_Habilidad INT NOT NULL,
@@ -59,7 +78,7 @@ CREATE TABLE Empleado_Habilidad (
     FOREIGN KEY (ID_Habilidad) REFERENCES Habilidades(ID_Habilidad) ON DELETE CASCADE
 );
 
-
+DROP TABLE IF EXISTS Requisitos_Cliente;
 CREATE TABLE Requisitos_Cliente (
     ID_Requisito INT AUTO_INCREMENT PRIMARY KEY,
     Descripcion TEXT NOT NULL,
@@ -68,20 +87,54 @@ CREATE TABLE Requisitos_Cliente (
     FOREIGN KEY (ID_Proyecto) REFERENCES Proyectos(ID_Proyecto)
 );
 
+
 -- Procemientos almacenados
 
 -- /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 --                                         Roles
 -- /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+-- sp: crear rol
+Drop Procedure CrearRol;
 -- sp: crear rol
 DELIMITER //
+
 CREATE PROCEDURE CrearRol(
     IN p_Descripcion VARCHAR(100)
 )
 BEGIN
-    INSERT INTO Roles (Descripcion) VALUES (p_Descripcion);
+    DECLARE rollback_action BOOLEAN DEFAULT 0;
+
+    -- Configurar manejador de errores
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+        SET rollback_action = 1;
+
+    -- Iniciar transacción
+    START TRANSACTION;
+
+    BEGIN
+        -- Lógica del procedimiento
+        INSERT INTO Roles (Descripcion) VALUES (p_Descripcion);
+    END;
+
+    -- Comprobar si se produjo un error
+    IF rollback_action THEN
+        -- Revertir transacción en caso de error
+        ROLLBACK;
+        -- Registrar el error en la tabla de errores
+        INSERT INTO Errores (Usuario, Sentencia_Incorrecta, IP, Fecha_Hora, Motivo_Error)
+        VALUES ('UsuarioReportes', 'CREATE ROLE', 'IP_Donde_Fue_Disparada', NOW(), 'Error al crear el rol');
+        -- Lanzar una excepción personalizada
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error al crear el rol. Consulta la tabla de errores para más detalles.';
+    ELSE
+        -- Confirmar transacción si no hay errores
+        COMMIT;
+    END IF;
 END //
+
 DELIMITER ;
+
 
 -- sp: actualizar rol
 DELIMITER //
@@ -95,14 +148,42 @@ END //
 DELIMITER ;
 
 -- sp: eliminar rol
+Drop PROCEDURE EliminarRol;
+-- Modifica tu procedimiento almacenado EliminarRol
 DELIMITER //
 CREATE PROCEDURE EliminarRol(
     IN p_ID_Rol INT
 )
+SQL SECURITY DEFINER -- Define el usuario que ejecuta el procedimiento como el creador (root)
 BEGIN
-    DELETE FROM Roles WHERE ID_Rol = p_ID_Rol;
-END //
+    DECLARE rollback_action BOOLEAN DEFAULT 0;
+    -- Configurar manejador de errores
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+        SET rollback_action = 1;
+    -- Iniciar transacción
+    START TRANSACTION;
+    -- Lógica del procedimiento
+    BEGIN
+        -- Lógica del procedimiento
+        DELETE FROM Roles WHERE ID_Rol = p_ID_Rol;
+    END;
+    -- Comprobar si se produjo un error
+    IF rollback_action THEN
+        -- Revertir transacción en caso de error
+        ROLLBACK;
+        -- Insertar en la tabla de errores usando el usuario root (definer)
+        INSERT INTO Errores (Usuario, Sentencia_Incorrecta, IP, Fecha_Hora, Motivo_Error)
+        VALUES ('UsuarioReportes', 'DELETE ROLE', 'IP_Donde_Fue_Disparada', NOW(), 'Error al eliminar el rol');
+        -- Lanzar una excepción personalizada
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error al eliminar el rol. Consulta la tabla de errores para más detalles.';
+    ELSE
+        -- Confirmar transacción si no hay errores
+        COMMIT;
+    END IF;
+END//
 DELIMITER ;
+
 
 -- /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 --                                     Habilidades
@@ -382,16 +463,12 @@ FROM Tareas T
 JOIN Empleados E ON T.ID_Empleado = E.ID_Empleado
 JOIN Proyectos P ON T.ID_Proyecto = P.ID_Proyecto;
 
-SELECT * FROM Vista_Tareas_Empleados;
-
 -- Vista de Proyectos y Requisitos del Cliente
 CREATE VIEW Vista_Detalles_Proyectos AS
 SELECT P.ID_Proyecto, P.Nombre AS Nombre_Proyecto, P.Estado, C.Nombre AS Nombre_Cliente, RC.Tipo AS Tipo_Requisito, RC.Descripcion AS Requisito_Cliente
 FROM Proyectos P
 INNER JOIN Clientes C ON P.ID_Cliente = C.ID_Cliente
 LEFT JOIN Requisitos_Cliente RC ON P.ID_Proyecto = RC.ID_Proyecto;
-
-SELECT * FROM Vista_Detalles_Proyectos;
 
 -- Vista de Empleados y sus Habilidades
 CREATE VIEW Vista_Detalles_Empleado AS
@@ -401,54 +478,6 @@ INNER JOIN Roles R ON E.Rol_ID = R.ID_Rol
 LEFT JOIN Empleado_Habilidad EH ON E.ID_Empleado = EH.ID_Empleado
 LEFT JOIN Habilidades H ON EH.ID_Habilidad = H.ID_Habilidad
 GROUP BY E.ID_Empleado;
-
-SELECT * FROM Vista_Detalles_Empleado;
-
-
--- /////////////////////////////////////////////////////////////////////////////////////////////////
--- Insercion de datos de prueba
--- /////////////////////////////////////////////////////////////////////////////////////////////////
-
-INSERT INTO Roles (Descripcion) VALUES
-('Desarrollador'),
-('Diseñador'),
-('Gerente de Proyecto');
-
-INSERT INTO Habilidades (Descripcion, Nivel_Dificultad) VALUES
-('Programación en Java', 3),
-('Diseño UX/UI', 2),
-('Gestión de Proyectos', 4);
-
-INSERT INTO Empleados (Nombre, Correo_Electronico, Rol_ID) VALUES
-('Jeyner Manzaba', 'jomanzaba@espe.edu.ec', 3),
-('Mario Pazmiño', 'mpazmiño@espe.edu.ec', 1),
-('Nataly Pacheco', 'nmpacheco1@espe.edu.ec', 2);
-
-INSERT INTO Clientes (Nombre, Cedula, Telefono, Correo_Electronico) VALUES
-('Espe SD', '1234567890', '0990206287', 'info@empresa.com'),
-('Aldean supermercados', '0987654321', '0990206287', 'contacto@cliente.com'),
-('La feria', '5678901234', '0321456987', 'info@institucion1.org');
-
-INSERT INTO Proyectos (Nombre, Descripcion, Fecha_Inicio, Fecha_Fin, Estado, ID_Cliente) VALUES
-('Proyecto Web', 'Desarrollo de un sitio web corporativo', '2023-01-15', '2023-06-30', 'En Progreso', 1),
-('Sistema de Inventario', 'Desarrollo de un sistema de inventario', '2023-02-01', '2023-07-31', 'Planificado', 2),
-('App Móvil', 'Desarrollo de una aplicación móvil', '2023-03-10', '2023-09-15', 'En Proceso de Evaluación', 3);
-
-INSERT INTO Tareas (Descripcion, Estado, Fecha_Inicio, Fecha_Fin, ID_Empleado, ID_Proyecto) VALUES
-('Diseño de interfaz de usuario', 'En Progreso', '2023-01-20', '2023-02-15', 3, 1),
-('Programación de backend', 'Planificado', '2023-02-10', '2023-03-30', 1, 2),
-('Evaluación de requisitos', 'En Proceso de Evaluación', '2023-03-20', '2023-04-15', 2, 3);
-
-INSERT INTO Empleado_Habilidad (ID_Empleado, ID_Habilidad) VALUES
-(1, 2),
-(2, 3),
-(3, 1);
-
-INSERT INTO Requisitos_Cliente (Descripcion, Tipo, ID_Proyecto) VALUES
-('Registro de usuarios', 'Funcional', 1),
-('Seguridad y monitoreo de datos', 'No Funcional', 2),
-('Compatibilidad con dispositivos', 'Funcional', 3);
-
 
 
 
