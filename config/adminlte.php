@@ -333,12 +333,6 @@ return [
         ],
 
         [
-            'text' => 'Requisitos',
-            'route'  => 'requisitos.index',
-            'icon' => 'fas fa-users',
-        ],
-
-        [
             'text' => 'Proyectos',
             'route'  => 'proyectos.index',
             'icon' => 'fas fa-users',

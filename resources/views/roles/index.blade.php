@@ -14,7 +14,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <a href="{{ route('roles.create') }}" class="btn btn-primary btn-sm" style="font-size: 17px">
+                        <a href="{{ route('roles.create') }}" class="btn btn-primary btn-sm" style="font-size: 14px">
                             Nuevo Rol
                         </a>
                     </div>

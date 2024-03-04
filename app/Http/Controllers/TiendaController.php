@@ -10,13 +10,13 @@ class TiendaController extends Controller
 {
     public function index()
     {
-        $tiendasAutos = Tienda::all();
-        return view('tiendas_autos.index', compact('tiendasAutos'));
+        $tiendas = Tienda::all();
+        return view('tiendas.index', compact('tiendas'));
     }
 
     public function create()
     {
-        return view('tiendas_autos.formulario');
+        return view('tiendas.formulario');
     }
 
     public function store(Request $request)
@@ -24,14 +24,14 @@ class TiendaController extends Controller
         $nombre = $request->input('nombre');
         $direccion = $request->input('direccion');
 
-        DB::statement('exec [CrearTiendaAuto] ?, ?', [$nombre, $direccion]);
-        return redirect()->route('tiendas_autos.index')->with(['message' => 'Tienda de auto creada satisfactoriamente', 'type' => 'success']);
+        DB::statement('exec [CrearTienda] ?, ?', [$nombre, $direccion]);
+        return redirect()->route('tiendas.index')->with(['message' => 'Tienda de auto creada satisfactoriamente', 'type' => 'success']);
     }
 
     public function edit($ID_Tienda)
     {
-        $tiendaAuto = Tienda::find($ID_Tienda);
-        return view('tiendas_autos.formulario', compact('tiendaAuto'));
+        $tienda = Tienda::find($ID_Tienda);
+        return view('tiendas.formulario', compact('tienda'));
     }
 
     public function update(Request $request, $ID_Tienda)
@@ -39,13 +39,13 @@ class TiendaController extends Controller
         $nombre = $request->input('nombre');
         $direccion = $request->input('direccion');
 
-        DB::statement('exec [ActualizarTiendaAuto] ?, ?, ?', [$ID_Tienda, $nombre, $direccion]);
-        return redirect()->route('tiendas_autos.index')->with(['message' => 'Tienda de auto actualizada satisfactoriamente', 'type' => 'success']);
+        DB::statement('exec [ActualizarTienda] ?, ?, ?', [$ID_Tienda, $nombre, $direccion]);
+        return redirect()->route('tiendas.index')->with(['message' => 'Tienda de auto actualizada satisfactoriamente', 'type' => 'success']);
     }
 
     public function destroy($ID_Tienda)
     {
-        DB::statement('exec [EliminarTiendaAuto] ?', [$ID_Tienda]);
-        return redirect()->route('tiendas_autos.index')->with(['message' => 'Tienda de auto eliminada satisfactoriamente', 'type' => 'success']);
+        DB::statement('exec [EliminarTienda] ?', [$ID_Tienda]);
+        return redirect()->route('tiendas.index')->with(['message' => 'Tienda de auto eliminada satisfactoriamente', 'type' => 'success']);
     }
 }

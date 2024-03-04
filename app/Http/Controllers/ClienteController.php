@@ -33,7 +33,7 @@ class ClienteController extends Controller
         $correo = $request->input('correo');
 
         // Llamar al procedimiento almacenado
-        $sp_cliente = DB::statement('exec CrearCliente ?, ?, ?, ?', [$nombre, $cedula, $telefono, $correo]);
+        DB::statement('exec [CrearCliente] ?, ?, ?, ?', [$nombre, $cedula, $telefono, $correo]);
 
         // Puedes agregar más lógica aquí según sea necesario, por ejemplo, redirigir a la vista de clientes.
         return redirect()->route('clientes.index')->with([ 'message' => 'Cliente registrado satisfactoriamente', 'type' => 'success' ]);

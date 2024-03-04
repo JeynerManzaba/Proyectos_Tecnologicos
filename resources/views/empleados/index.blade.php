@@ -37,6 +37,7 @@
                                     <th>Correo Electrónico</th>
                                     <th>Rol</th>
                                     <th>Habilidades</th>
+                                    <th>Sucursal</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -49,6 +50,11 @@
                                         <td>
                                             @foreach ($empleado->habilidades as $habilidad)
                                                 {{ $habilidad->Descripcion }},
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            @foreach ($empleado->tiendas as $tiendas)
+                                                {{ $tiendas->Nombre }},
                                             @endforeach
                                         </td>
                                         <td>

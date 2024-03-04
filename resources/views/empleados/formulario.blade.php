@@ -81,6 +81,22 @@
                             @endforeach
                         </div>
 
+                        <div class="form-group">
+                            {!! Form::label('tiendas', 'Tiendas') !!}
+                            <br>
+                            @foreach ($tiendas as $tienda)
+                                <div class="form-check form-check-inline">
+                                    {!! Form::checkbox(
+                                        'tiendas[]',
+                                        $tienda->ID_Tienda,
+                                        isset($empleado) && $empleado->tiendas->contains($tienda->ID_Tienda),
+                                        ['class' => 'form-check-input'],
+                                    ) !!}
+                                    {!! Form::label('tiendas[]', $tienda->Nombre, ['class' => 'form-check-label']) !!}
+                                </div>
+                            @endforeach
+                        </div>
+
                         <button type="submit" class="btn btn-primary my-4">
                             {{ isset($empleado) ? 'Guardar Cambios' : 'Crear Empleado' }}
                         </button>

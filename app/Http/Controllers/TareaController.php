@@ -44,7 +44,7 @@ class TareaController extends Controller
         $idEmpleado = $request->input('ID_Empleado');
         $idProyecto = $request->input('ID_Proyecto');
 
-        DB::statement('CALL CrearTarea(?, ?, ?, ?, ?, ?)', [
+        DB::statement('exec CrearTarea ?, ?, ?, ?, ?, ?', [
             $descripcion, $estado, $fechaInicio, $fechaFin, $idEmpleado, $idProyecto
         ]);
 
@@ -77,7 +77,7 @@ class TareaController extends Controller
         $idEmpleado = $request->input('ID_Empleado');
         $idProyecto = $request->input('ID_Proyecto');
 
-        DB::statement('CALL ActualizarTarea(?, ?, ?, ?, ?, ?, ?)', [
+        DB::statement('exec ActualizarTarea ?, ?, ?, ?, ?, ?, ?', [
             $ID_Tarea, $descripcion, $estado, $fechaInicio, $fechaFin, $idEmpleado, $idProyecto
         ]);
 
@@ -86,7 +86,7 @@ class TareaController extends Controller
 
     public function destroy($ID_Tarea)
     {
-        DB::statement('CALL EliminarTarea(?)', [$ID_Tarea]);
+        DB::statement('exec EliminarTarea ? ', [$ID_Tarea]);
 
         return redirect()->route('tareas.index')->with(['message' => 'Tarea eliminada satisfactoriamente', 'type' => 'success']);
     }

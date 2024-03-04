@@ -346,6 +346,34 @@ BEGIN
     DELETE FROM Tareas WHERE ID_Tarea = @p_ID_Tarea;
 END;
 
+-- Crear una Tienda
+CREATE PROCEDURE CrearTienda
+    @p_Nombre VARCHAR(255),
+    @p_Direccion VARCHAR(255)
+AS
+BEGIN
+    INSERT INTO TiendasAutos (Nombre, Direccion) VALUES (@p_Nombre, @p_Direccion);
+END;
+
+-- Actualizar una Tienda
+CREATE PROCEDURE ActualizarTienda
+    @p_ID_Tienda INT,
+    @p_Nombre VARCHAR(255),
+    @p_Direccion VARCHAR(255)
+AS
+BEGIN
+    UPDATE TiendasAutos SET Nombre = @p_Nombre, Direccion = @p_Direccion WHERE ID_Tienda = @p_ID_Tienda;
+END;
+
+-- Eliminar una Tienda
+CREATE PROCEDURE EliminarTienda
+    @p_ID_Tienda INT
+AS
+BEGIN
+    DELETE FROM TiendasAutos WHERE ID_Tienda = @p_ID_Tienda;
+END;
+
+
 -- Crear un auto
 CREATE PROCEDURE CrearAuto
     @p_Modelo VARCHAR(255),

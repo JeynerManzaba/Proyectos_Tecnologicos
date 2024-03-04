@@ -14,7 +14,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <a href="{{ route('habilidades.create') }}" class="btn btn-primary btn-sm" style="font-size: 16px">
+                        <a href="{{ route('habilidades.create') }}" class="btn btn-primary btn-sm" style="font-size: 15px">
                             Nueva Habilidad
                         </a>
                     </div>

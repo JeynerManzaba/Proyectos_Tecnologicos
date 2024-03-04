@@ -1,10 +1,10 @@
 @extends('adminlte::page')
 
-@section('title', 'TiendaAutos')
+@section('title', 'tiendas')
 
 @section('content_header')
     <div class="d-flex justify-content-between">
-        <h1>TiendaAutos</h1>
+        <h1>tiendas</h1>
     </div>
 @stop
 
@@ -14,8 +14,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <a href="{{ route('tiendaAutos.create') }}" class="btn btn-primary btn-sm" style="font-size: 16px">
-                            Nueva TiendaAuto
+                        <a href="{{ route('tiendas.create') }}" class="btn btn-primary btn-sm" style="font-size: 16px">
+                            Nueva Tienda
                         </a>
                     </div>
                     <!-- /.card-header -->
@@ -34,34 +34,34 @@
                             <thead>
                                 <tr>
                                     <th>Nombre Tienda</th>
-                                    <!-- Agrega los demás encabezados según tu estructura de la tabla TiendaAutos -->
+                                    <th>Dirección</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($tiendaAutos as $tiendaAuto)
+                                @foreach ($tiendas as $tienda)
                                     <tr>
-                                        <td>{{ $tiendaAuto->Nombre_Tienda }}</td>
-                                        <!-- Agrega los demás campos según tu estructura de la tabla TiendaAutos -->
+                                        <td>{{ $tienda->Nombre }}</td>
+                                        <td>{{ $tienda->Direccion }}</td>
                                         <td>
                                             <div class="d-flex justify-content-around">
-                                                <a href="{{ route('tiendaAutos.edit', $tiendaAuto->ID_TiendaAuto) }}"
+                                                <a href="{{ route('tiendas.edit', $tienda->ID_Tienda) }}"
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-edit"></i> Editar
                                                 </a>
                                                 <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
-                                                    data-target="#deleteModal{{ $tiendaAuto->ID_TiendaAuto }}">
+                                                    data-target="#deleteModal{{ $tienda->ID_Tienda }}">
                                                     <i class="fas fa-trash"></i> Eliminar
                                                 </button>
                                                 <!-- Modal para confirmar la eliminación -->
-                                                <div class="modal fade" id="deleteModal{{ $tiendaAuto->ID_TiendaAuto }}" tabindex="-1"
-                                                    role="dialog" aria-labelledby="deleteModalLabel{{ $tiendaAuto->ID_TiendaAuto }}"
+                                                <div class="modal fade" id="deleteModal{{ $tienda->ID_Tienda }}" tabindex="-1"
+                                                    role="dialog" aria-labelledby="deleteModalLabel{{ $tienda->ID_Tienda }}"
                                                     aria-hidden="true">
                                                     <div class="modal-dialog" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title"
-                                                                    id="deleteModalLabel{{ $tiendaAuto->ID_TiendaAuto }}">
+                                                                    id="deleteModalLabel{{ $tienda->ID_Tienda }}">
                                                                     Confirmar Eliminación</h5>
                                                                 <button type="button" class="close" data-dismiss="modal"
                                                                     aria-label="Close">
@@ -69,12 +69,12 @@
                                                                 </button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                ¿Estás seguro de que deseas eliminar esta TiendaAuto?
+                                                                ¿Estás seguro de que deseas eliminar esta tienda?
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-dismiss="modal">Cancelar</button>
-                                                                {!! Form::open(['route' => ['tiendaAutos.destroy', $tiendaAuto->ID_TiendaAuto], 'method' => 'DELETE']) !!}
+                                                                {!! Form::open(['route' => ['tiendas.destroy', $tienda->ID_Tienda], 'method' => 'DELETE']) !!}
                                                                     @csrf
                                                                     <button type="submit" class="btn btn-danger">Eliminar</button>
                                                                 {!! Form::close() !!}

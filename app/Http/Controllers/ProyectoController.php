@@ -31,7 +31,7 @@ class ProyectoController extends Controller
         $estado = $request->input('estado');
         $idCliente = $request->input('id_cliente');
 
-        DB::statement('CALL CrearProyecto(?, ?, ?, ?, ?, ?)', [$nombre, $descripcion, $fechaInicio, $fechaFin, $estado, $idCliente]);
+        DB::statement('exec [CrearProyecto] ?, ?, ?, ?, ?, ?', [$nombre, $descripcion, $fechaInicio, $fechaFin, $estado, $idCliente]);
 
         return redirect()->route('proyectos.index')->with(['message' => 'Proyecto creado satisfactoriamente', 'type' => 'success']);
     }
@@ -52,14 +52,14 @@ class ProyectoController extends Controller
         $estado = $request->input('estado');
         $idCliente = $request->input('id_cliente');
 
-        DB::statement('CALL ActualizarProyecto(?, ?, ?, ?, ?, ?, ?)', [$ID_Proyecto, $nombre, $descripcion, $fechaInicio, $fechaFin, $estado, $idCliente]);
+        DB::statement('exec [ActualizarProyecto] ?, ?, ?, ?, ?, ?, ?', [$ID_Proyecto, $nombre, $descripcion, $fechaInicio, $fechaFin, $estado, $idCliente]);
 
         return redirect()->route('proyectos.index')->with(['message' => 'Proyecto actualizado satisfactoriamente', 'type' => 'success']);
     }
 
     public function destroy($ID_Proyecto)
     {
-        DB::statement('CALL EliminarProyecto(?)', [$ID_Proyecto]);
+        DB::statement('exec [EliminarProyecto] ?', [$ID_Proyecto]);
 
         return redirect()->route('proyectos.index')->with(['message' => 'Proyecto eliminado satisfactoriamente', 'type' => 'success']);
     }

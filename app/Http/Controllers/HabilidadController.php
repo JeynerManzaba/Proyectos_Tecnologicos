@@ -39,7 +39,7 @@ class HabilidadController extends Controller
         $descripcion = $request->input('descripcion');
         $nivelDificultad = $request->input('nivel_dificultad');
 
-        DB::statement('exec [ActualizarHabilidad] ?, ?, ?)', [$ID_Habilidad, $descripcion, $nivelDificultad]);
+        DB::statement('exec [ActualizarHabilidad] ?, ?, ?', [$ID_Habilidad, $descripcion, $nivelDificultad]);
         return redirect()->route('habilidades.index')->with(['message' => 'Habilidad actualizada satisfactoriamente', 'type' => 'success']);
     }
 

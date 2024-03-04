@@ -32,4 +32,10 @@ class Empleado extends Model
         return $this->belongsToMany(Habilidad::class, 'empleado_habilidad', 'ID_Empleado', 'ID_Habilidad');
     }
 
+
+    public function tiendas()
+    {
+        return $this->belongsToMany(Tienda::class, 'EmpleadosTiendas', 'ID_Empleado', 'ID_Tienda');
+    }
+
 }

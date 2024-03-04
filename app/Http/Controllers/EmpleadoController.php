@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Empleado;
 use App\Models\Rol;
 use App\Models\Habilidad;
+use App\Models\Tienda;
 
 class EmpleadoController extends Controller
 {
     public function index()
     {
-        $empleados = Empleado::with(['rol', 'habilidades'])->get();
+        $empleados = Empleado::with(['rol', 'habilidades', 'tiendas'])->get();
         return view('empleados.index', compact('empleados'));
     }
 
@@ -21,7 +22,8 @@ class EmpleadoController extends Controller
     {
         $roles = Rol::all();
         $habilidades = Habilidad::all();
-        return view('empleados.formulario', compact('roles', 'habilidades'));
+        $tiendas = Tienda::all();
+        return view('empleados.formulario', compact('roles', 'habilidades', 'tiendas'));
     }
 
     public function store(Request $request)
@@ -58,6 +60,7 @@ class EmpleadoController extends Controller
 
         // Adjuntar habilidades al empleado recién creado
         $empleado->habilidades()->sync($request->input('habilidades', []));
+        $empleado->tiendas()->sync($request->input('tiendas', []));
 
         return redirect()->route('empleados.index')->with(['message' => 'Empleado creado satisfactoriamente', 'type' => 'success']);
     }
@@ -67,7 +70,8 @@ class EmpleadoController extends Controller
         $empleado = Empleado::with('habilidades')->find($ID_Empleado);
         $roles = Rol::all();
         $habilidades = Habilidad::all();
-        return view('empleados.formulario', compact('empleado', 'roles', 'habilidades'));
+        $tiendas = Tienda::all();
+        return view('empleados.formulario', compact('empleado', 'roles', 'habilidades', 'tiendas'));
     }
 
     public function update(Request $request, int $ID_Empleado)
@@ -105,6 +109,7 @@ class EmpleadoController extends Controller
 
         // Actualizar habilidades del empleado
         $empleado->habilidades()->sync($request->input('habilidades', []));
+        $empleado->tiendas()->sync($request->input('tiendas', []));
 
         return redirect()->route('empleados.index')->with(['message' => 'Empleado actualizado satisfactoriamente', 'type' => 'success']);
     }

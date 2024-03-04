@@ -1,10 +1,10 @@
 @extends('adminlte::page')
 
-@section('title', isset($tiendaAuto) ? 'Editar TiendaAuto' : 'Nueva TiendaAuto')
+@section('title', isset($tienda) ? 'Editar Tienda' : 'Nueva Tienda')
 
 @section('content_header')
     <div class="d-flex justify-content-between">
-        <h1>{{ isset($tiendaAuto) ? 'Editar TiendaAuto' : 'Nueva TiendaAuto' }}</h1>
+        <h1>{{ isset($tienda) ? 'Editar Tienda' : 'Nueva Tienda' }}</h1>
     </div>
 @stop
 
@@ -25,21 +25,22 @@
                         @endif
 
                         <!-- Formulario de edición o creación -->
-                        @if(isset($tiendaAuto))
-                            {!! Form::model($tiendaAuto, ['route' => ['tiendaAutos.update', $tiendaAuto->ID_TiendaAuto], 'method' => 'PUT']) !!}
+                        @if(isset($tienda))
+                            {!! Form::model($tienda, ['route' => ['tiendas.update', $tienda->ID_Tienda], 'method' => 'PUT']) !!}
                         @else
-                            {!! Form::open(['route' => 'tiendaAutos.store', 'method' => 'POST']) !!}
+                            {!! Form::open(['route' => 'tiendas.store', 'method' => 'POST']) !!}
                         @endif
                             @csrf
                             <div class="form-group">
-                                {!! Form::label('nombre_tienda', 'Nombre Tienda') !!}
-                                {!! Form::text('nombre_tienda', isset($tiendaAuto) ? $tiendaAuto->Nombre_Tienda : null, ['class' => 'form-control', 'required']) !!}
+                                {!! Form::label('nombre', 'Nombre') !!}
+                                {!! Form::text('nombre', isset($tienda) ? $tienda->Nombre : null, ['class' => 'form-control', 'required']) !!}
                             </div>
-
-                            <!-- Agrega los demás campos según tu estructura de la tabla TiendaAutos -->
-
+                            <div class="form-group">
+                                {!! Form::label('direccion', 'Direccion') !!}
+                                {!! Form::text('direccion', isset($tienda) ? $tienda->Direccion : null, ['class' => 'form-control', 'required']) !!}
+                            </div>
                             <button type="submit" class="btn btn-primary">
-                                {{ isset($tiendaAuto) ? 'Guardar Cambios' : 'Crear TiendaAuto' }}
+                                {{ isset($tienda) ? 'Guardar Cambios' : 'Crear Tienda' }}
                             </button>
                         {!! Form::close() !!}
                         <!-- Fin del formulario de edición o creación -->
