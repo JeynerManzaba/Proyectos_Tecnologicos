@@ -111,7 +111,7 @@ class EmpleadoController extends Controller
 
     public function destroy($ID_Empleado)
     {
-        DB::statement('CALL EliminarEmpleado(?)', [$ID_Empleado]);
+        DB::statement('exec [EliminarEmpleado] ?', [$ID_Empleado]);
         return redirect()->route('empleados.index')->with(['message' => 'Empleado eliminado satisfactoriamente', 'type' => 'success']);
     }
 }

@@ -25,7 +25,8 @@ class RolController extends Controller
     {
         $descripcion = $request->input('descripcion');
 
-        DB::statement('CALL CrearRol(?)', [$descripcion]);
+        DB::statement('exec CrearRol ?', [$descripcion]);
+
         return redirect()->route('roles.index')->with(['message' => 'Rol creado satisfactoriamente', 'type' => 'success']);
     }
 
@@ -38,13 +39,13 @@ class RolController extends Controller
     public function update(Request $request, int $ID_Rol)
     {
         $descripcion = $request->input('descripcion');
-        DB::statement('CALL ActualizarRol(?, ?)', [$ID_Rol, $descripcion]);
+        DB::statement('exec ActualizarRol ?, ?', [$ID_Rol, $descripcion]);
         return redirect()->route('roles.index')->with(['message' => 'Rol actualizado satisfactoriamente', 'type' => 'success']);
     }
 
     public function destroy($ID_Rol)
     {
-        DB::statement('CALL EliminarRol(?)', [$ID_Rol]);
+        DB::statement('exec EliminarRol ?', [$ID_Rol]);
         return redirect()->route('roles.index')->with(['message' => 'Rol eliminado satisfactoriamente', 'type' => 'success']);
     }
 

@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'Mapache',
+    'title' => 'Concesionaria',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>MAPACHE </b>ESPE',
+    'logo' => '<b>Concesionaria</b>ESPE',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
@@ -303,10 +303,6 @@ return [
 
         // Sidebar items:
         [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
-        ],
-        [
             'text' => 'blog',
             'url'  => 'admin/blog',
             'can'  => 'manage-blog',
@@ -347,9 +343,25 @@ return [
             'route'  => 'proyectos.index',
             'icon' => 'fas fa-users',
         ],
+
         [
-            'text' => 'Traeas',
+            'text' => 'Tareas',
             'route'  => 'tareas.index',
+            'icon' => 'fas fa-users',
+        ],
+        [
+            'text' => 'Autos',
+            'route'  => 'autos.index',
+            'icon' => 'fas fa-users',
+        ],
+        [
+            'text' => 'Marcas',
+            'route'  => 'marcas.index',
+            'icon' => 'fas fa-users',
+        ],
+        [
+            'text' => 'Tiendas',
+            'route'  => 'tiendas.index',
             'icon' => 'fas fa-users',
         ],
         // Vistas

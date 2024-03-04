@@ -10,7 +10,9 @@ use App\Http\Controllers\HabilidadController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\TareaController;
-use App\Http\Controllers\RequisitosClienteController;
+use App\Http\Controllers\AutoController;
+use App\Http\Controllers\MarcaController;
+use App\Http\Controllers\TiendaController;
 
 
 //Rutas por defecto
@@ -26,9 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('roles', RolController::class);
     Route::resource('habilidades', HabilidadController::class);
     Route::resource('empleados', EmpleadoController::class);
-    Route::resource('requisitos', RequisitosClienteController::class);
     Route::resource('proyectos', ProyectoController::class);
     Route::resource('tareas', TareaController::class);
+    Route::resource('autos', AutoController::class);
+    Route::resource('marcas', MarcaController::class);
+    Route::resource('tiendas', TiendaController::class);
 
 });
 

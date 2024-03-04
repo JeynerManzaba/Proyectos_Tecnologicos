@@ -24,7 +24,7 @@ class HabilidadController extends Controller
         $descripcion = $request->input('descripcion');
         $nivelDificultad = $request->input('nivel_dificultad');
 
-        DB::statement('CALL CrearHabilidad(?, ?)', [$descripcion, $nivelDificultad]);
+        DB::statement('exec [CrearHabilidad] ?, ?', [$descripcion, $nivelDificultad]);
         return redirect()->route('habilidades.index')->with(['message' => 'Habilidad creada satisfactoriamente', 'type' => 'success']);
     }
 
@@ -39,13 +39,13 @@ class HabilidadController extends Controller
         $descripcion = $request->input('descripcion');
         $nivelDificultad = $request->input('nivel_dificultad');
 
-        DB::statement('CALL ActualizarHabilidad(?, ?, ?)', [$ID_Habilidad, $descripcion, $nivelDificultad]);
+        DB::statement('exec [ActualizarHabilidad] ?, ?, ?)', [$ID_Habilidad, $descripcion, $nivelDificultad]);
         return redirect()->route('habilidades.index')->with(['message' => 'Habilidad actualizada satisfactoriamente', 'type' => 'success']);
     }
 
     public function destroy($ID_Habilidad)
     {
-        DB::statement('CALL EliminarHabilidad(?)', [$ID_Habilidad]);
+        DB::statement('exec [EliminarHabilidad] ?', [$ID_Habilidad]);
         return redirect()->route('habilidades.index')->with(['message' => 'Habilidad eliminada satisfactoriamente', 'type' => 'success']);
     }
 }

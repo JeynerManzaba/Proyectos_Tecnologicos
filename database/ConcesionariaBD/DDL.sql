@@ -9,7 +9,7 @@ GO
 
 -- Apuntar a la Base de Datos
 USE ProyectoGDB_Quinto;
-GO 
+GO
 -- Creación de tablas
 DROP TABLE IF EXISTS Roles;
 CREATE TABLE Roles (
@@ -75,15 +75,62 @@ CREATE TABLE Empleado_Habilidad (
     FOREIGN KEY (ID_Empleado) REFERENCES Empleados(ID_Empleado) ON DELETE CASCADE,
     FOREIGN KEY (ID_Habilidad) REFERENCES Habilidades(ID_Habilidad) ON DELETE CASCADE
 );
-
--- Crear la tabla Requisitos_Cliente
-CREATE TABLE Requisitos_Cliente (
-    ID_Requisito INT IDENTITY(1,1) PRIMARY KEY,
-    Descripcion TEXT NOT NULL,
-    Tipo VARCHAR(20) CHECK (Tipo IN ('Funcional', 'No Funcional')) NOT NULL,
-    ID_Proyecto INT NOT NULL,
-    FOREIGN KEY (ID_Proyecto) REFERENCES Proyectos(ID_Proyecto)
+-- Creación de tablas para la venta de autos con cláusulas CASCADE
+DROP TABLE IF EXISTS MarcasAutos;
+CREATE TABLE MarcasAutos (
+    ID_Marca INT IDENTITY(1,1) PRIMARY KEY,
+    Nombre VARCHAR(255) NOT NULL
 );
+
+DROP TABLE IF EXISTS Autos;
+CREATE TABLE Autos (
+    ID_Auto INT IDENTITY(1,1) PRIMARY KEY,
+    Modelo VARCHAR(255) NOT NULL,
+    Año INT NOT NULL,
+    Precio DECIMAL(18, 2) NOT NULL,
+    ID_Marca INT NOT NULL,
+    Stock INT NOT NULL,
+    FOREIGN KEY (ID_Marca) REFERENCES MarcasAutos(ID_Marca) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS ComprasAutos;
+CREATE TABLE ComprasAutos (
+    ID_Compra INT IDENTITY(1,1) PRIMARY KEY,
+    FechaCompra DATE NOT NULL,
+    ID_Auto INT NOT NULL,
+    ID_Cliente INT NOT NULL,
+    CantidadComprada INT NOT NULL,
+    PrecioTotal DECIMAL(18, 2) NOT NULL,
+    FOREIGN KEY (ID_Auto) REFERENCES Autos(ID_Auto) ON DELETE CASCADE,
+    FOREIGN KEY (ID_Cliente) REFERENCES Clientes(ID_Cliente) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS TiendasAutos;
+CREATE TABLE TiendasAutos (
+    ID_Tienda INT IDENTITY(1,1) PRIMARY KEY,
+    Nombre VARCHAR(255) NOT NULL,
+    Direccion VARCHAR(255) NOT NULL
+);
+
+DROP TABLE IF EXISTS StockTiendas;
+CREATE TABLE StockTiendas (
+    ID_Tienda INT NOT NULL,
+    ID_Auto INT NOT NULL,
+    CantidadEnStock INT NOT NULL,
+    PRIMARY KEY (ID_Tienda, ID_Auto),
+    FOREIGN KEY (ID_Tienda) REFERENCES TiendasAutos(ID_Tienda) ON DELETE CASCADE,
+    FOREIGN KEY (ID_Auto) REFERENCES Autos(ID_Auto) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS EmpleadosTiendas;
+CREATE TABLE EmpleadosTiendas (
+    ID_Empleado INT NOT NULL,
+    ID_Tienda INT NOT NULL,
+    PRIMARY KEY (ID_Empleado, ID_Tienda),
+    FOREIGN KEY (ID_Empleado) REFERENCES Empleados(ID_Empleado) ON DELETE CASCADE,
+    FOREIGN KEY (ID_Tienda) REFERENCES TiendasAutos(ID_Tienda) ON DELETE CASCADE
+);
+
 
 -- Procedimientos almacenados
 
@@ -217,41 +264,6 @@ BEGIN
     DELETE FROM Clientes WHERE ID_Cliente = @p_ID_Cliente;
 END;
 
--- Crear un requisito
-CREATE PROCEDURE CrearRequisitoCliente
-    @p_Descripcion TEXT,
-    @p_Tipo VARCHAR(20),
-    @p_ID_Proyecto INT
-AS
-BEGIN
-    INSERT INTO Requisitos_Cliente (Descripcion, Tipo, ID_Proyecto)
-    VALUES (@p_Descripcion, @p_Tipo, @p_ID_Proyecto);
-END;
-
--- Actualizar un requisito
-CREATE PROCEDURE ActualizarRequisitoCliente
-    @p_ID_Requisito INT,
-    @p_Descripcion TEXT,
-    @p_Tipo VARCHAR(20),
-    @p_ID_Proyecto INT
-AS
-BEGIN
-    UPDATE Requisitos_Cliente
-    SET
-        Descripcion = @p_Descripcion,
-        Tipo = @p_Tipo,
-        ID_Proyecto = @p_ID_Proyecto
-    WHERE ID_Requisito = @p_ID_Requisito;
-END;
-
--- Eliminar un requisito
-CREATE PROCEDURE EliminarRequisitoCliente
-    @p_ID_Requisito INT
-AS
-BEGIN
-    DELETE FROM Requisitos_Cliente WHERE ID_Requisito = @p_ID_Requisito;
-END;
-
 -- Crear un proyecto
 CREATE PROCEDURE CrearProyecto
     @p_Nombre VARCHAR(255),
@@ -334,8 +346,44 @@ BEGIN
     DELETE FROM Tareas WHERE ID_Tarea = @p_ID_Tarea;
 END;
 
--- Vistas
+-- Crear un auto
+CREATE PROCEDURE CrearAuto
+    @p_Modelo VARCHAR(255),
+    @p_Año INT,
+    @p_Precio DECIMAL(18, 2),
+    @p_ID_Marca INT,
+    @p_Stock INT
+AS
+BEGIN
+    INSERT INTO Autos (Modelo, Año, Precio, ID_Marca, Stock)
+    VALUES (@p_Modelo, @p_Año, @p_Precio, @p_ID_Marca, @p_Stock);
+END;
 
+-- Actualizar un auto
+CREATE PROCEDURE ActualizarAuto
+    @p_ID_Auto INT,
+    @p_Modelo VARCHAR(255),
+    @p_Año INT,
+    @p_Precio DECIMAL(18, 2),
+    @p_ID_Marca INT,
+    @p_Stock INT
+AS
+BEGIN
+    UPDATE Autos
+    SET Modelo = @p_Modelo, Año = @p_Año, Precio = @p_Precio, ID_Marca = @p_ID_Marca, Stock = @p_Stock
+    WHERE ID_Auto = @p_ID_Auto;
+END;
+
+-- Eliminar un auto
+CREATE PROCEDURE EliminarAuto
+    @p_ID_Auto INT
+AS
+BEGIN
+    DELETE FROM Autos WHERE ID_Auto = @p_ID_Auto;
+END;
+
+
+-- Vistas
 -- Vista de Tareas Asignadas a un Empleado
 CREATE VIEW Vista_Tareas_Empleados AS
 SELECT T.ID_Tarea, T.Descripcion AS Descripcion_Tarea, T.Estado, T.Fecha_Inicio, T.Fecha_Fin, E.Nombre AS Responsable, P.Nombre AS Proyecto
@@ -343,17 +391,11 @@ FROM Tareas T
 JOIN Empleados E ON T.ID_Empleado = E.ID_Empleado
 JOIN Proyectos P ON T.ID_Proyecto = P.ID_Proyecto;
 
--- Vista de Proyectos y Requisitos del Cliente
-CREATE VIEW Vista_Detalles_Proyectos AS
-SELECT P.ID_Proyecto, P.Nombre AS Nombre_Proyecto, P.Estado, C.Nombre AS Nombre_Cliente, RC.Tipo AS Tipo_Requisito, RC.Descripcion AS Requisito_Cliente
-FROM Proyectos P
-INNER JOIN Clientes C ON P.ID_Cliente = C.ID_Cliente
-LEFT JOIN Requisitos_Cliente RC ON P.ID_Proyecto = RC.ID_Proyecto;
 
 -- Vista de Empleados y sus Habilidades
 -- Vista de Empleados y sus Habilidades
 CREATE VIEW Vista_Detalles_Empleado AS
-SELECT 
+SELECT
     E.ID_Empleado,
     E.Nombre AS Nombre_Empleado,
     E.Correo_Electronico,
@@ -363,8 +405,8 @@ FROM Empleados E
 INNER JOIN Roles R ON E.Rol_ID = R.ID_Rol
 LEFT JOIN Empleado_Habilidad EH ON E.ID_Empleado = EH.ID_Empleado
 LEFT JOIN Habilidades H ON EH.ID_Habilidad = H.ID_Habilidad
-GROUP BY 
+GROUP BY
     E.ID_Empleado,
-    E.Nombre, 
+    E.Nombre,
     E.Correo_Electronico,
     R.Descripcion;
