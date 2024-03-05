@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>Concesionaria</b>ESPE',
+    'logo' => '<b>Concesionaria</b> ESPE',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
@@ -309,6 +309,12 @@ return [
         ],
 
         [
+            'text' => 'Tiendas',
+            'route'  => 'tiendas.index',
+            'icon' => 'fas fa-store-alt',
+        ],
+
+        [
             'text' => 'Roles',
             'route'  => 'roles.index',
             'icon' => 'fas fa-users',
@@ -317,46 +323,47 @@ return [
         [
             'text' => 'Habilidad',
             'route'  => 'habilidades.index',
-            'icon' => 'fas fa-users',
+            'icon' => 'fas fa-tools',
         ],
 
         [
             'text' => 'Empleado',
             'route'  => 'empleados.index',
-            'icon' => 'fas fa-users',
+            'icon' => 'fas fa-user-tie',
         ],
 
         [
             'text' => 'Cliente',
             'route'  => 'clientes.index',
-            'icon' => 'fas fa-users',
+            'icon' => 'fas fa-user-plus',
         ],
 
         [
             'text' => 'Proyectos',
             'route'  => 'proyectos.index',
-            'icon' => 'fas fa-users',
+            'icon' => 'fas fa-desktop',
         ],
 
         [
             'text' => 'Tareas',
             'route'  => 'tareas.index',
-            'icon' => 'fas fa-users',
+            'icon' => '	fas fa-address-book',
         ],
         [
             'text' => 'Autos',
             'route'  => 'autos.index',
-            'icon' => 'fas fa-users',
+            'icon' => '	fas fa-car',
         ],
         [
             'text' => 'Marcas',
             'route'  => 'marcas.index',
-            'icon' => 'fas fa-users',
+            'icon' => 'fas fa-car',
         ],
+
         [
-            'text' => 'Tiendas',
-            'route'  => 'tiendas.index',
-            'icon' => 'fas fa-users',
+            'text' => 'Stock',
+            'route'  => 'stocks.index',
+            'icon' => 'fas fa-car',
         ],
         // Vistas
 
@@ -372,12 +379,6 @@ return [
         [
             'text' => 'Detalle de empleados ',
             'route'  => 'vistas.vw_empleado',
-            'icon' => 'fas fa-chevron-circle-right',
-        ],
-
-        [
-            'text' => 'Detalle de proyectos ',
-            'route'  => 'vistas.vw_proyecto',
             'icon' => 'fas fa-chevron-circle-right',
         ]
     ],

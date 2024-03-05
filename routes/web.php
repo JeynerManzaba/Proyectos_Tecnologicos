@@ -13,6 +13,7 @@ use App\Http\Controllers\TareaController;
 use App\Http\Controllers\AutoController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\TiendaController;
+use App\Http\Controllers\StockController;
 
 
 //Rutas por defecto
@@ -33,6 +34,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('autos', AutoController::class);
     Route::resource('marcas', MarcaController::class);
     Route::resource('tiendas', TiendaController::class);
+    Route::resource('stocks', StockController::class);
+
 
 });
 

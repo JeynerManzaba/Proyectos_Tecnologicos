@@ -75,7 +75,8 @@ CREATE TABLE Empleado_Habilidad (
     FOREIGN KEY (ID_Empleado) REFERENCES Empleados(ID_Empleado) ON DELETE CASCADE,
     FOREIGN KEY (ID_Habilidad) REFERENCES Habilidades(ID_Habilidad) ON DELETE CASCADE
 );
--- Creación de tablas para la venta de autos con cláusulas CASCADE
+
+
 DROP TABLE IF EXISTS MarcasAutos;
 CREATE TABLE MarcasAutos (
     ID_Marca INT IDENTITY(1,1) PRIMARY KEY,
@@ -371,6 +372,35 @@ CREATE PROCEDURE EliminarTienda
 AS
 BEGIN
     DELETE FROM TiendasAutos WHERE ID_Tienda = @p_ID_Tienda;
+END;
+
+--Craer una marca
+CREATE PROCEDURE CrearMarca
+    @p_Nombre VARCHAR(255)
+AS
+BEGIN
+    INSERT INTO MarcasAutos (Nombre)
+    VALUES (@p_Nombre);
+END;
+
+--Actualizar una marca
+CREATE PROCEDURE ActualizarMarcaAuto
+    @p_ID_Marca INT,
+    @p_Nombre VARCHAR(255)
+AS
+BEGIN
+    UPDATE MarcasAutos
+    SET Nombre = @p_Nombre
+    WHERE ID_Marca = @p_ID_Marca;
+END;
+
+-- Eliminar una marca
+CREATE PROCEDURE EliminarMarcaAuto
+    @p_ID_Marca INT
+AS
+BEGIN
+    DELETE FROM MarcasAutos
+    WHERE ID_Marca = @p_ID_Marca;
 END;
 
 
