@@ -61,9 +61,32 @@
                                                 </button>
                                                 <!-- Modal para confirmar la eliminación -->
                                                 <div class="modal fade" id="deleteModal{{ $auto->ID_Auto }}" tabindex="-1"
-                                                    role="dialog" aria-labelledby="deleteModalLabel{{ $auto->ID_Auto}}"
+                                                    role="dialog" aria-labelledby="deleteModalLabel{{ $auto->ID_Auto }}"
                                                     aria-hidden="true">
-                                                    <!-- ... (El código del modal es el mismo que el del proyecto) ... -->
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title"
+                                                                    id="deleteModalLabel{{ $auto->ID_Auto }}">
+                                                                    Confirmar Eliminación</h5>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                ¿Estás seguro de que deseas eliminar este auto?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal">Cancelar</button>
+                                                                {!! Form::open(['route' => ['autos.destroy', $auto->ID_Auto], 'method' => 'DELETE']) !!}
+                                                                    @csrf
+                                                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                                {!! Form::close() !!}
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>

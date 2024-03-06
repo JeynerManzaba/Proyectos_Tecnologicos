@@ -1,10 +1,10 @@
 @extends('adminlte::page')
 
-@section('title', isset($auto) ? 'Editar Auto' : 'Nuevo Auto')
+@section('title', 'Marcas de Autos')
 
 @section('content_header')
     <div class="d-flex justify-content-between">
-        <h1>{{ isset($auto) ? 'Editar Auto' : 'Nuevo Auto' }}</h1>
+        <h1>Marcas de Autos</h1>
     </div>
 @stop
 
@@ -13,6 +13,12 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
+                    <div class="card-header">
+                        <a href="{{ route('marcas.create') }}" class="btn btn-primary btn-sm" style="font-size: 16px">
+                            Nueva Marca de Auto
+                        </a>
+                    </div>
+                    <!-- /.card-header -->
                     <div class="card-body">
                         @if (session('message') && session('type') == 'success')
                             <div class="alert alert-{{ session('type') }} alert-dismissible fade show" role="alert">
@@ -24,44 +30,64 @@
                             @php session()->forget([ 'message', 'type' ]); @endphp
                         @endif
 
-                        <!-- Formulario de edición o creación -->
-                        @if(isset($auto))
-                            {!! Form::model($auto, ['route' => ['autos.update', $auto->ID_Auto], 'method' => 'PUT']) !!}
-                        @else
-                            {!! Form::open(['route' => 'autos.store', 'method' => 'POST']) !!}
-                        @endif
-                            @csrf
-                            <div class="form-group">
-                                {!! Form::label('modelo', 'Modelo') !!}
-                                {!! Form::text('modelo', isset($auto) ? $auto->Modelo : null, ['class' => 'form-control', 'required']) !!}
-                            </div>
-
-                            <div class="form-group">
-                                {!! Form::label('ano', 'Año') !!}
-                                {!! Form::number('ano', isset($auto) ? $auto->Año : null, ['class' => 'form-control', 'required']) !!}
-                            </div>
-
-                            <div class="form-group">
-                                {!! Form::label('precio', 'Precio') !!}
-                                {!! Form::text('precio', isset($auto) ? $auto->Precio : null, ['class' => 'form-control', 'required']) !!}
-                            </div>
-
-                            <div class="form-group">
-                                {!! Form::label('id_marca', 'Marca') !!}
-                                {!! Form::select('id_marca', $marcas->pluck('Nombre', 'ID_Marca'), isset($auto) ? $auto->ID_Marca : null, ['class' => 'form-control', 'required']) !!}
-                            </div>
-
-                            <div class="form-group">
-                                {!! Form::label('stock', 'Stock') !!}
-                                {!! Form::number('stock', isset($auto) ? $auto->Stock : null, ['class' => 'form-control', 'required']) !!}
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">
-                                {{ isset($auto) ? 'Guardar Cambios' : 'Crear Auto' }}
-                            </button>
-                        {!! Form::close() !!}
-                        <!-- Fin del formulario de edición o creación -->
+                        <table id="dataTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($marcas as $marca)
+                                    <tr>
+                                        <td>{{ $marca->Nombre }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-around">
+                                                <a href="{{ route('marcas.edit', $marca->ID_Marca) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-edit"></i> Editar
+                                                </a>
+                                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                                                    data-target="#deleteModal{{ $marca->ID_Marca }}">
+                                                    <i class="fas fa-trash"></i> Eliminar
+                                                </button>
+                                                <!-- Modal para confirmar la eliminación -->
+                                                <div class="modal fade" id="deleteModal{{ $marca->ID_Marca }}" tabindex="-1"
+                                                    role="dialog" aria-labelledby="deleteModalLabel{{ $marca->ID_Marca }}"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title"
+                                                                    id="deleteModalLabel{{ $marca->ID_Marca }}">
+                                                                    Confirmar Eliminación</h5>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                ¿Estás seguro de que deseas eliminar esta marca de auto?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal">Cancelar</button>
+                                                                {!! Form::open(['route' => ['marcas.destroy', $marca->ID_Marca], 'method' => 'DELETE']) !!}
+                                                                    @csrf
+                                                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                                {!! Form::close() !!}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
+                    <!-- /.card-body -->
                 </div>
             </div>
         </div>
@@ -73,4 +99,7 @@
 @stop
 
 @section('js')
+    <script>
+        $('#dataTable').dataTable();
+    </script>
 @stop

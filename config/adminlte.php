@@ -360,11 +360,6 @@ return [
             'icon' => 'fas fa-car',
         ],
 
-        [
-            'text' => 'Stock',
-            'route'  => 'stocks.index',
-            'icon' => 'fas fa-car',
-        ],
         // Vistas
 
         ['header' => 'Vistas'],
