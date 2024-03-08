@@ -403,11 +403,12 @@ CREATE PROCEDURE CrearAuto
     @p_Año INT,
     @p_Precio DECIMAL(18, 2),
     @p_ID_Marca INT,
-    @p_Stock INT
+    @p_Stock INT,
+	@p_ID_Tienda INT
 AS
 BEGIN
-    INSERT INTO Autos (Modelo, Año, Precio, ID_Marca, Stock)
-    VALUES (@p_Modelo, @p_Año, @p_Precio, @p_ID_Marca, @p_Stock);
+    INSERT INTO Autos (Modelo, Año, Precio, ID_Marca, Stock, ID_Tienda)
+    VALUES (@p_Modelo, @p_Año, @p_Precio, @p_ID_Marca, @p_Stock, @p_ID_Tienda);
 END;
 
 -- Actualizar un auto
@@ -417,11 +418,12 @@ CREATE PROCEDURE ActualizarAuto
     @p_Año INT,
     @p_Precio DECIMAL(18, 2),
     @p_ID_Marca INT,
-    @p_Stock INT
+    @p_Stock INT,
+	@p_ID_Tienda INT
 AS
 BEGIN
     UPDATE Autos
-    SET Modelo = @p_Modelo, Año = @p_Año, Precio = @p_Precio, ID_Marca = @p_ID_Marca, Stock = @p_Stock
+    SET Modelo = @p_Modelo, Año = @p_Año, Precio = @p_Precio, ID_Marca = @p_ID_Marca, Stock = @p_Stock, ID_Tienda = @p_ID_Tienda
     WHERE ID_Auto = @p_ID_Auto;
 END;
 
