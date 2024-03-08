@@ -1,10 +1,10 @@
 @extends('adminlte::page')
 
-@section('title', 'Autos')
+@section('title', 'Lista de Compras')
 
 @section('content_header')
     <div class="d-flex justify-content-between">
-        <h1>Autos</h1>
+        <h1>Lista de Compras</h1>
     </div>
 @stop
 
@@ -14,8 +14,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <a href="{{ route('autos.create') }}" class="btn btn-primary btn-sm" style="font-size: 14px">
-                            Nuevo Auto
+                        <a href="{{ route('compras.create') }}" class="btn btn-primary btn-sm" style="font-size: 14px">
+                            Nueva Compra
                         </a>
                     </div>
                     <!-- /.card-header -->
@@ -33,43 +33,42 @@
                         <table id="dataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Modelo</th>
-                                    <th>Año</th>
-                                    <th>Precio</th>
-                                    <th>Marca</th>
-                                    <th>Stock</th>
-                                    <th>Tienda</th>
+                                    <th>Auto</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha de Compra</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Total</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($autos as $auto)
+                                @foreach ($compras as $compra)
                                     <tr>
-                                        <td>{{ $auto->Modelo }}</td>
-                                        <td>{{ $auto->Año }}</td>
-                                        <td>{{ $auto->Precio }}</td>
-                                        <td>{{ $auto->marca->Nombre }}</td>
-                                        <td>{{ $auto->Stock }}</td>
-                                        <td>{{ $auto->tienda->Nombre }}</td>
+                                        <td>{{ $compra->auto->Modelo }}</td>
+                                        <td>{{ $compra->cliente->Nombre }}</td>
+                                        <td>{{ $compra->FechaCompra }}</td>
+                                        <td>{{ $compra->CantidadComprada }}</td>
+                                        <td>{{ $compra->PrecioTotal }}</td>
                                         <td>
                                             <div class="d-flex justify-content-around">
-                                                <a href="{{ route('autos.edit', $auto->ID_Auto) }}"
-                                                    class="btn btn-primary btn-sm mr-3">
-                                                    <i class="fas fa-edit"></i>
+
+                                                <a href="{{ route('compras.edit', $compra->ID_Compra) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    Editar
                                                 </a>
                                                 <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
-                                                    data-target="#deleteModal{{ $auto->ID_Auto }}">
-                                                    <i class="fas fa-trash"></i>
+                                                    data-target="#deleteModal{{ $compra->ID_Compra }}">
+                                                    Eliminar
                                                 </button>
                                                 <!-- Modal para confirmar la eliminación -->
-                                                <div class="modal fade" id="deleteModal{{ $auto->ID_Auto }}" tabindex="-1"
-                                                    role="dialog" aria-labelledby="deleteModalLabel{{ $auto->ID_Auto }}"
+                                                <div class="modal fade" id="deleteModal{{ $compra->ID_Compra }}" tabindex="-1"
+                                                    role="dialog" aria-labelledby="deleteModalLabel{{ $compra->ID_Compra }}"
                                                     aria-hidden="true">
                                                     <div class="modal-dialog" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title"
-                                                                    id="deleteModalLabel{{ $auto->ID_Auto }}">
+                                                                    id="deleteModalLabel{{ $compra->ID_Compra }}">
                                                                     Confirmar Eliminación</h5>
                                                                 <button type="button" class="close" data-dismiss="modal"
                                                                     aria-label="Close">
@@ -77,12 +76,12 @@
                                                                 </button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                ¿Estás seguro de que deseas eliminar este auto?
+                                                                ¿Estás seguro de que deseas eliminar esta compra?
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-dismiss="modal">Cancelar</button>
-                                                                {!! Form::open(['route' => ['autos.destroy', $auto->ID_Auto], 'method' => 'DELETE']) !!}
+                                                                {!! Form::open(['route' => ['compras.destroy', $compra->ID_Compra], 'method' => 'DELETE']) !!}
                                                                     @csrf
                                                                     <button type="submit" class="btn btn-danger">Eliminar</button>
                                                                 {!! Form::close() !!}
@@ -110,6 +109,8 @@
 
 @section('js')
     <script>
-        $('#dataTable').dataTable();
+        $(document).ready(function() {
+            $('#dataTable').DataTable();
+        });
     </script>
 @stop

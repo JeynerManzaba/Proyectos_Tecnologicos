@@ -18,6 +18,7 @@ class Auto extends Model
         'Precio',
         'ID_Marca',
         'Stock',
+        'ID_Tienda'
     ];
 
     public function marca()
@@ -25,9 +26,9 @@ class Auto extends Model
         return $this->belongsTo(Marca::class, 'ID_Marca', 'ID_Marca');
     }
 
-    public function stock()
+    public function tienda()
     {
-        return $this->belongsToMany(Stock::class, 'StockTiendas', 'ID_Tienda', 'ID_Auto')
-                     ->withPivot('CantidadEnStock');
+        return $this->belongsTo(Tienda::class, 'ID_Tienda', 'ID_Tienda');
     }
+
 }

@@ -91,6 +91,8 @@ CREATE TABLE Autos (
     Precio DECIMAL(18, 2) NOT NULL,
     ID_Marca INT NOT NULL,
     Stock INT NOT NULL,
+    ID_Tienda INT,
+    FOREIGN KEY (ID_Tienda) REFERENCES TiendasAutos(ID_Tienda) ON DELETE CASCADE,
     FOREIGN KEY (ID_Marca) REFERENCES MarcasAutos(ID_Marca) ON DELETE CASCADE
 );
 
@@ -113,15 +115,6 @@ CREATE TABLE TiendasAutos (
     Direccion VARCHAR(255) NOT NULL
 );
 
-DROP TABLE IF EXISTS StockTiendas;
-CREATE TABLE StockTiendas (
-    ID_Tienda INT NOT NULL,
-    ID_Auto INT NOT NULL,
-    CantidadEnStock INT NOT NULL,
-    PRIMARY KEY (ID_Tienda, ID_Auto),
-    FOREIGN KEY (ID_Tienda) REFERENCES TiendasAutos(ID_Tienda) ON DELETE CASCADE,
-    FOREIGN KEY (ID_Auto) REFERENCES Autos(ID_Auto) ON DELETE CASCADE
-);
 
 DROP TABLE IF EXISTS EmpleadosTiendas;
 CREATE TABLE EmpleadosTiendas (

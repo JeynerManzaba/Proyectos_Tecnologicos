@@ -56,6 +56,11 @@
                                 {!! Form::number('stock', isset($auto) ? $auto->Stock : null, ['class' => 'form-control', 'required']) !!}
                             </div>
 
+                            <div class="form-group">
+                                {!! Form::label('id_tienda', 'Tienda') !!}
+                                {!! Form::select('id_tienda', $tiendas->pluck('Nombre', 'ID_Tienda'), isset($auto) ? $auto->ID_Tienda : null, ['class' => 'form-control', 'required']) !!}
+                            </div>
+
                             <button type="submit" class="btn btn-primary">
                                 {{ isset($auto) ? 'Guardar Cambios' : 'Crear Auto' }}
                             </button>

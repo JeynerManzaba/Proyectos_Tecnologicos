@@ -360,6 +360,12 @@ return [
             'icon' => 'fas fa-car',
         ],
 
+        [
+            'text' => 'Ventas',
+            'route'  => 'compras.index',
+            'icon' => 'fas fa-car',
+        ],
+
         // Vistas
 
         ['header' => 'Vistas'],
